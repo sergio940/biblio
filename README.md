@@ -1,7 +1,7 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Vitvisor Netflix Style</title>
+<title>Vitvisor Album</title>
 <style>
 body {margin:0; background:#111; color:#fff; font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;}
 header {position:sticky; top:0; z-index:1000; background:#141414; padding:15px 20px; display:flex; align-items:center; gap:10px; box-shadow:0 4px 10px rgba(0,0,0,0.7);}
@@ -19,10 +19,8 @@ header h1 {margin:0; font-size:1.8rem; color:#e50914; flex-shrink:0; text-shadow
 #side-menu button:hover:not(.active){background:#333;}
 section {padding:20px 20px;}
 section h2 {font-size:1.6rem; color:#e50914; margin-bottom:10px;}
-.carousel {display:flex; overflow-x:auto; gap:15px; padding-bottom:10px; scroll-behavior:smooth;}
-.carousel::-webkit-scrollbar{height:8px;}
-.carousel::-webkit-scrollbar-thumb{background:#555; border-radius:4px;}
-.card {flex:0 0 auto; width:200px; background:#1c1c1c; border-radius:12px; overflow:hidden; transition:.3s; box-shadow:0 5px 15px rgba(0,0,0,0.6);}
+.grid {display:grid; grid-template-columns:repeat(auto-fill,minmax(180px,1fr)); gap:15px;}
+.card {background:#1c1c1c; border-radius:12px; overflow:hidden; transition:.3s; box-shadow:0 5px 15px rgba(0,0,0,0.6);}
 .card:hover {transform:translateY(-5px) scale(1.05); box-shadow:0 10px 25px rgba(0,0,0,0.8);}
 .card img {width:100%; height:260px; object-fit:cover; transition:.3s;}
 .card img:hover {filter: brightness(1.1);}
@@ -65,12 +63,12 @@ button.remove:hover{background:#ff5c5c;}
 
 <section>
     <h2>Resultados</h2>
-    <div class="carousel" id="results"></div>
+    <div class="grid" id="results"></div>
 </section>
 
 <section>
     <h2>Mi Biblioteca</h2>
-    <div class="carousel" id="library"></div>
+    <div class="grid" id="library"></div>
 </section>
 
 <script>
@@ -113,7 +111,7 @@ searchInput.addEventListener("input",()=>{
 // Funciones búsqueda
 function searchBooks(q){ fetch(`https://www.googleapis.com/books/v1/volumes?q=${q}`).then(r=>r.json()).then(d=>{ if(!d.items||d.items.length===0){resultsDiv.innerHTML=`<div class="no-results">No se encontró ninguna coincidencia</div>`;} else renderResults(d.items,"book");}); }
 function searchMovies(q){ fetch(`https://api.tvmaze.com/search/shows?q=${q}`).then(r=>r.json()).then(d=>{ if(!d||d.length===0){resultsDiv.innerHTML=`<div class="no-results">No se encontró ninguna coincidencia</div>`;} else renderResults(d,"movie");}); }
-function searchGames(q){ const qN=q.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase(); fetch("https://api.codetabs.com/v1/proxy?quest=https://www.freetogame.com/api/games").then(r=>r.json()).then(data=>{ const filtered=data.filter(g=>{const title=g.title?.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase()||""; const desc=g.short_description?.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase()||""; return title.includes(qN)||desc.includes(qN);}); filtered.length===0? resultsDiv.innerHTML=`<div class="no-results">No se encontró ninguna coincidencia</div>`:renderResults(filtered.slice(0,20),"game");}).catch(()=>{resultsDiv.innerHTML=`<div class="no-results">Error al cargar videojuegos</div>`;});}
+function searchGames(q){ const qN=q.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase(); fetch("https://api.codetabs.com/v1/proxy?quest=https://www.freetogame.com/api/games").then(r=>r.json()).then(data=>{ const filtered=data.filter(g=>{const title=g.title?.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase()||""; const desc=g.short_description?.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase()||""; return title.includes(qN)||desc.includes(qN);}); filtered.length===0? resultsDiv.innerHTML=`<div class="no-results">No se encontró ninguna coincidencia</div>`:renderResults(filtered.slice(0,50),"game");}).catch(()=>{resultsDiv.innerHTML=`<div class="no-results">Error al cargar videojuegos</div>`;});}
 
 // Render resultados
 function renderResults(items,type){ resultsDiv.innerHTML="";
@@ -139,7 +137,19 @@ function renderResults(items,type){ resultsDiv.innerHTML="";
 }
 
 // Render biblioteca
-function renderLibrary(){ libraryDiv.innerHTML=""; let filtered=library; if(activeFilter!=="all") filtered=library.filter(i=>i.type===activeFilter); if(filtered.length===0){libraryDiv.innerHTML=`<div class="no-results">No hay elementos guardados</div>`; return;} filtered.forEach((i,idx)=>{ const card=document.createElement("div"); card.className="card"; card.innerHTML=`<img src="${i.img||''}"><div class="info"><h4>${i.title}</h4><div class="stars">${starsHTML(i.rating)}</div><button class="remove">Eliminar</button></div>`; card.querySelector(".remove").onclick=()=>{ const originalIndex=library.indexOf(i); library.splice(originalIndex,1); save(); renderLibrary(); }; libraryDiv.appendChild(card);});}
+function renderLibrary(){ 
+    libraryDiv.innerHTML=""; 
+    let filtered=library; 
+    if(activeFilter!=="all") filtered=library.filter(i=>i.type===activeFilter); 
+    if(filtered.length===0){libraryDiv.innerHTML=`<div class="no-results">No hay elementos guardados</div>`; return;} 
+    filtered.forEach((i,idx)=>{ 
+        const card=document.createElement("div"); 
+        card.className="card"; 
+        card.innerHTML=`<img src="${i.img||''}"><div class="info"><h4>${i.title}</h4><div class="stars">${starsHTML(i.rating)}</div><button class="remove">Eliminar</button></div>`; 
+        card.querySelector(".remove").onclick=()=>{ const originalIndex=library.indexOf(i); library.splice(originalIndex,1); save(); renderLibrary(); }; 
+        libraryDiv.appendChild(card);
+    });
+}
 
 // Estrellas
 function starsHTML(n){let s="";for(let i=1;i<=5;i++) s+=`<span class="${i<=n?'active':''}">★</span>`; return s;}
@@ -147,6 +157,5 @@ function enableStars(card){const stars=card.querySelectorAll(".stars span"); sta
 function save(){localStorage.setItem("vitvisor",JSON.stringify(library));}
 renderLibrary();
 </script>
-
 </body>
 </html>
