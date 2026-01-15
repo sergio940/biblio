@@ -111,7 +111,28 @@ function searchMovies(q){ fetch(`https://api.tvmaze.com/search/shows?q=${q}`).th
 function searchGames(q){ const qN=q.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase(); fetch("https://api.codetabs.com/v1/proxy?quest=https://www.freetogame.com/api/games").then(r=>r.json()).then(data=>{ const filtered=data.filter(g=>{const title=g.title?.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase()||""; const desc=g.short_description?.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase()||""; return title.includes(qN)||desc.includes(qN);}); filtered.length===0? resultsDiv.innerHTML=`<div class="no-results">No se encontró ninguna coincidencia</div>`:renderResults(filtered.slice(0,20),"game");}).catch(()=>{resultsDiv.innerHTML=`<div class="no-results">Error al cargar videojuegos</div>`;});}
 
 // Render resultados
-function renderResults(items,type){ resultsDiv.innerHTML=""; items.forEach(i=>{let title,img;if(type==="book"){title=i.volumeInfo.title; img=i.volumeInfo.imageLinks?.thumbnail;} else if(type==="movie"){title=i.show.name; img=i.show.image?.medium;} else {title=i.title; img=i.thumbnail;} const card=document.createElement("div"); card.className="card"; card.innerHTML=`<img src="${img||''}"><div class="info"><h4>${title}</h4><div class="stars">${starsHTML(0)}</div><button class="save">Guardar</button></div>`; enableStars(card); card.querySelector(".save").onclick=()=>{const rating=card.querySelectorAll(".active").length; library.push({title,img,rating,type}); save(); renderLibrary();}; resultsDiv.appendChild(card);});}
+function renderResults(items,type){ resultsDiv.innerHTML="";
+    items.forEach(i=>{
+        let title,img;
+        if(type==="book"){title=i.volumeInfo.title; img=i.volumeInfo.imageLinks?.thumbnail;}
+        else if(type==="movie"){title=i.show.name; img=i.show.image?.medium;}
+        else {title=i.title; img=i.thumbnail;}
+        const card=document.createElement("div");
+        card.className="card";
+        card.innerHTML=`<img src="${img||''}"><div class="info"><h4>${title}</h4><div class="stars">${starsHTML(0)}</div><button class="save">Guardar</button></div>`;
+        enableStars(card);
+        // Guardar y actualizar filtro
+        card.querySelector(".save").onclick=()=>{
+            const rating=card.querySelectorAll(".active").length;
+            library.push({title,img,rating,type});
+            activeFilter="all";
+            filterButtons.forEach(b=>b.classList.remove("active"));
+            filterButtons[0].classList.add("active");
+            save(); renderLibrary();
+        };
+        resultsDiv.appendChild(card);
+    });
+}
 
 // Render biblioteca
 function renderLibrary(){ libraryDiv.innerHTML=""; let filtered=library; if(activeFilter!=="all") filtered=library.filter(i=>i.type===activeFilter); if(filtered.length===0){libraryDiv.innerHTML=`<div class="no-results">No hay elementos guardados</div>`; return;} filtered.forEach((i,idx)=>{ const card=document.createElement("div"); card.className="card"; card.innerHTML=`<img src="${i.img||''}"><div class="info"><h4>${i.title}</h4><div class="stars">${starsHTML(i.rating)}</div><button class="remove">Eliminar</button></div>`; card.querySelector(".remove").onclick=()=>{ const originalIndex=library.indexOf(i); library.splice(originalIndex,1); save(); renderLibrary(); }; libraryDiv.appendChild(card);});}
