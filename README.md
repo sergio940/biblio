@@ -1,44 +1,43 @@
+<!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Vitvisor</title>
+<title>Vitvisor Netflix Style</title>
 <style>
-body { margin:0; background:#0a0a0a; color:#fff; font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-/* Header */
-header { position:sticky; top:0; z-index:1000; background:linear-gradient(90deg,#111,#1c1c1c); padding:15px 20px; display:flex; align-items:center; gap:10px; box-shadow:0 4px 10px rgba(0,0,0,0.5);}
-header h1 { margin:0; font-size:1.8rem; color:#00e676; text-shadow:0 0 8px #00e676; flex-shrink:0;}
-.hamburger { font-size:1.8rem; cursor:pointer;}
-.hamburger:hover { color:#00e676;}
-.search-bar { flex:1; display:flex; gap:10px; align-items:center; }
-.search-bar input { padding:8px 10px; font-size:14px; border:none; border-radius:6px; background:#222; color:#fff; outline:none; width:100%; box-shadow: inset 0 0 5px rgba(0,0,0,0.6); transition:.3s;}
-.search-bar input:hover { background:#333;}
-.search-bar select { padding:8px 10px; border:none; border-radius:6px; background:#222; color:#fff; cursor:pointer;}
-/* Menú lateral */
-#side-menu { position:fixed; top:0; left:-250px; width:250px; height:100%; background:#111; box-shadow:5px 0 15px rgba(0,0,0,0.7); padding:20px; transition:.3s; z-index:2000; display:flex; flex-direction:column; gap:10px;}
-#side-menu h3 { margin-top:0; color:#00e676; text-shadow:0 0 5px #00e676; }
-#side-menu button { padding:10px; border:none; border-radius:6px; background:#222; color:#fff; cursor:pointer; font-weight:bold; text-align:left; transition:.2s;}
-#side-menu button.active { background:#00e676; color:#000;}
+body {margin:0; background:#111; color:#fff; font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;}
+header {position:sticky; top:0; z-index:1000; background:#141414; padding:15px 20px; display:flex; align-items:center; gap:10px; box-shadow:0 4px 10px rgba(0,0,0,0.7);}
+header h1 {margin:0; font-size:1.8rem; color:#e50914; flex-shrink:0; text-shadow:0 0 8px #e50914;}
+.hamburger {font-size:1.8rem; cursor:pointer; color:#fff;}
+.hamburger:hover {color:#e50914;}
+.search-bar {flex:1; display:flex; gap:10px; align-items:center;}
+.search-bar input {padding:8px 10px; font-size:14px; border:none; border-radius:6px; background:#222; color:#fff; outline:none; width:100%; box-shadow: inset 0 0 5px rgba(0,0,0,0.6); transition:.3s;}
+.search-bar input:hover {background:#333;}
+.search-bar select {padding:8px 10px; border:none; border-radius:6px; background:#222; color:#fff; cursor:pointer;}
+#side-menu {position:fixed; top:0; left:-250px; width:250px; height:100%; background:#141414; box-shadow:5px 0 15px rgba(0,0,0,0.8); padding:20px; transition:.3s; z-index:2000; display:flex; flex-direction:column; gap:10px;}
+#side-menu h3 {margin-top:0; color:#e50914;}
+#side-menu button {padding:10px; border:none; border-radius:6px; background:#222; color:#fff; cursor:pointer; font-weight:bold; text-align:left; transition:.2s;}
+#side-menu button.active {background:#e50914; color:#fff;}
 #side-menu button:hover:not(.active){background:#333;}
-/* Secciones */
-section { padding:20px 30px;}
-section h2 { font-size:1.6rem; color:#00e676; text-shadow:0 0 6px #00e676; margin-bottom:15px;}
-.grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:20px;}
-/* Tarjetas */
-.card { background:#1c1c1c; border-radius:12px; overflow:hidden; transition:.3s; box-shadow:0 5px 15px rgba(0,0,0,0.6);}
-.card:hover { transform:translateY(-5px) scale(1.03); box-shadow:0 10px 25px rgba(0,0,0,0.8);}
-.card img { width:100%; height:260px; object-fit:cover; transition:.3s;}
+section {padding:20px 20px;}
+section h2 {font-size:1.6rem; color:#e50914; margin-bottom:10px;}
+.carousel {display:flex; overflow-x:auto; gap:15px; padding-bottom:10px; scroll-behavior:smooth;}
+.carousel::-webkit-scrollbar{height:8px;}
+.carousel::-webkit-scrollbar-thumb{background:#555; border-radius:4px;}
+.card {flex:0 0 auto; width:200px; background:#1c1c1c; border-radius:12px; overflow:hidden; transition:.3s; box-shadow:0 5px 15px rgba(0,0,0,0.6);}
+.card:hover {transform:translateY(-5px) scale(1.05); box-shadow:0 10px 25px rgba(0,0,0,0.8);}
+.card img {width:100%; height:260px; object-fit:cover; transition:.3s;}
 .card img:hover {filter: brightness(1.1);}
-.info { padding:12px;}
-.info h4 { margin:0 0 6px 0; font-size:1.1rem; color:#00e676;}
-button.save { background:#00e676;color:#000;width:100%;margin-top:6px;border:none;border-radius:6px;cursor:pointer;font-weight:bold; transition:.2s;}
-button.save:hover{background:#00ff88;}
-button.remove { background:#e53935;color:#fff;width:100%;margin-top:6px;border:none;border-radius:6px;cursor:pointer;font-weight:bold; transition:.2s;}
+.info {padding:12px;}
+.info h4 {margin:0 0 6px 0; font-size:1.1rem; color:#e50914;}
+button.save {background:#e50914;color:#fff;width:100%;margin-top:6px;border:none;border-radius:6px;cursor:pointer;font-weight:bold; transition:.2s;}
+button.save:hover{background:#ff1a2d;}
+button.remove {background:#ff3b3b;color:#fff;width:100%;margin-top:6px;border:none;border-radius:6px;cursor:pointer;font-weight:bold; transition:.2s;}
 button.remove:hover{background:#ff5c5c;}
 .stars {display:flex; margin-bottom:6px;}
 .stars span {font-size:18px; cursor:pointer; color:#555; transition:.2s;}
 .stars span.active {color:gold; text-shadow:0 0 5px gold;}
 .no-results {grid-column:1/-1; text-align:center; font-size:18px; opacity:.7;}
-@media(max-width:600px){ header{flex-direction:column; align-items:flex-start; gap:10px;} .grid{grid-template-columns:repeat(auto-fill,minmax(180px,1fr));}}
+@media(max-width:600px){ .card{width:150px;} }
 </style>
 </head>
 <body>
@@ -65,15 +64,14 @@ button.remove:hover{background:#ff5c5c;}
     <button data-filter="games">Videojuegos</button>
 </div>
 
-<!-- Resultados -->
-<section id="results-section">
+<section>
     <h2>Resultados</h2>
-    <div class="grid" id="results"></div>
+    <div class="carousel" id="results"></div>
 </section>
 
 <section>
     <h2>Mi Biblioteca</h2>
-    <div class="grid" id="library"></div>
+    <div class="carousel" id="library"></div>
 </section>
 
 <script>
@@ -103,9 +101,17 @@ filterButtons.forEach(btn=>{btn.addEventListener("click",()=>{
 });});
 
 // Búsqueda
-searchInput.addEventListener("input",()=>{ const q=searchInput.value.trim().toLowerCase(); resultsDiv.innerHTML=""; if(q.length<3) return; const t=typeSelect.value; if(t==="books") searchBooks(q); else if(t==="movies") searchMovies(q); else searchGames(q);});
+searchInput.addEventListener("input",()=>{ 
+    const q=searchInput.value.trim().toLowerCase(); 
+    resultsDiv.innerHTML=""; 
+    if(q.length<3) return; 
+    const t=typeSelect.value; 
+    if(t==="books") searchBooks(q); 
+    else if(t==="movies") searchMovies(q); 
+    else searchGames(q);
+});
 
-// Funciones de búsqueda
+// Funciones búsqueda
 function searchBooks(q){ fetch(`https://www.googleapis.com/books/v1/volumes?q=${q}`).then(r=>r.json()).then(d=>{ if(!d.items||d.items.length===0){resultsDiv.innerHTML=`<div class="no-results">No se encontró ninguna coincidencia</div>`;} else renderResults(d.items,"book");}); }
 function searchMovies(q){ fetch(`https://api.tvmaze.com/search/shows?q=${q}`).then(r=>r.json()).then(d=>{ if(!d||d.length===0){resultsDiv.innerHTML=`<div class="no-results">No se encontró ninguna coincidencia</div>`;} else renderResults(d,"movie");}); }
 function searchGames(q){ const qN=q.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase(); fetch("https://api.codetabs.com/v1/proxy?quest=https://www.freetogame.com/api/games").then(r=>r.json()).then(data=>{ const filtered=data.filter(g=>{const title=g.title?.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase()||""; const desc=g.short_description?.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase()||""; return title.includes(qN)||desc.includes(qN);}); filtered.length===0? resultsDiv.innerHTML=`<div class="no-results">No se encontró ninguna coincidencia</div>`:renderResults(filtered.slice(0,20),"game");}).catch(()=>{resultsDiv.innerHTML=`<div class="no-results">Error al cargar videojuegos</div>`;});}
@@ -121,10 +127,9 @@ function renderResults(items,type){ resultsDiv.innerHTML="";
         card.className="card";
         card.innerHTML=`<img src="${img||''}"><div class="info"><h4>${title}</h4><div class="stars">${starsHTML(0)}</div><button class="save">Guardar</button></div>`;
         enableStars(card);
-        // Guardar y actualizar filtro
         card.querySelector(".save").onclick=()=>{
-            const rating=card.querySelectorAll(".active").length;
-            library.push({title,img,rating,type});
+            let typeMapped = type==="book"?"books":type==="movie"?"movies":"games";
+            library.push({title,img,rating:card.querySelectorAll(".active").length,type:typeMapped});
             activeFilter="all";
             filterButtons.forEach(b=>b.classList.remove("active"));
             filterButtons[0].classList.add("active");
