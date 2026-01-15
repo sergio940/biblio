@@ -2,81 +2,109 @@
 <head>
 <meta charset="UTF-8">
 <title>Vitvisor</title>
-
 <style>
-body{
+/* ===== Body y tipografía ===== */
+body {
     margin:0;
-    background: linear-gradient(135deg,#0d0d0d,#1a1a1a);
+    background:#0a0a0a;
     color:#fff;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
-header{
-    background:#111;
-    padding:25px 20px;
-    text-align:center;
-    box-shadow:0 3px 10px rgba(0,0,0,0.5);
+
+/* ===== Cabecera tipo navbar ===== */
+header {
+    position:sticky;
+    top:0;
+    z-index:1000;
+    background:linear-gradient(90deg,#111,#1c1c1c);
+    padding:15px 30px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    box-shadow:0 4px 10px rgba(0,0,0,0.5);
 }
-header h1{
+
+/* Título a la izquierda */
+header h1 {
     margin:0;
-    font-size:2rem;
-    letter-spacing:2px;
+    font-size:1.8rem;
     color:#00e676;
     text-shadow:0 0 8px #00e676;
 }
-select,input{
-    width:100%;
-    padding:12px;
-    margin-top:10px;
-    font-size:16px;
+
+/* Barra de búsqueda a la derecha */
+.search-bar {
+    display:flex;
+    gap:10px;
+}
+.search-bar select,
+.search-bar input {
+    padding:8px 10px;
+    font-size:14px;
     border:none;
-    border-radius:8px;
+    border-radius:6px;
     background:#222;
     color:#fff;
     outline:none;
-    box-shadow: inset 0 0 5px rgba(0,0,0,0.7);
-    transition:0.2s;
+    box-shadow: inset 0 0 5px rgba(0,0,0,0.6);
+    transition:.3s;
 }
-select:hover,input:hover{
+.search-bar select:hover,
+.search-bar input:hover {
     background:#333;
 }
-.grid{
-    padding:20px;
+
+/* ===== Grid de resultados ===== */
+section {
+    padding:20px 30px;
+}
+section h2 {
+    font-size:1.6rem;
+    color:#00e676;
+    text-shadow:0 0 6px #00e676;
+    margin-bottom:15px;
+}
+.grid {
     display:grid;
-    grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
+    grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
     gap:20px;
 }
-.card{
+
+/* ===== Tarjetas ===== */
+.card {
     background:#1c1c1c;
     border-radius:12px;
     overflow:hidden;
     transition:.3s;
-    box-shadow:0 4px 15px rgba(0,0,0,0.5);
+    box-shadow:0 5px 15px rgba(0,0,0,0.6);
 }
-.card:hover{
-    transform: translateY(-5px) scale(1.03);
-    box-shadow:0 8px 25px rgba(0,0,0,0.7);
+.card:hover {
+    transform:translateY(-5px) scale(1.03);
+    box-shadow:0 10px 25px rgba(0,0,0,0.8);
 }
-.card img{
+.card img {
     width:100%;
     height:260px;
     object-fit:cover;
     transition:.3s;
 }
-.card img:hover{
+.card img:hover {
     filter: brightness(1.1);
 }
-.info{
+.info {
     padding:12px;
 }
-.info h4{
-    margin:0 0 8px 0;
+.info h4 {
+    margin:0 0 6px 0;
     font-size:1.1rem;
     color:#00e676;
 }
-button{
+
+/* ===== Botones ===== */
+button {
     width:100%;
-    padding:10px;
-    margin-top:8px;
+    padding:8px;
+    margin-top:6px;
     border:none;
     border-radius:6px;
     cursor:pointer;
@@ -87,60 +115,84 @@ button{
 .save:hover{background:#00ff88;}
 .remove{background:#e53935;color:#fff;}
 .remove:hover{background:#ff5c5c;}
-.stars{
+
+/* ===== Estrellas ===== */
+.stars {
     display:flex;
-    margin-bottom:5px;
+    margin-bottom:6px;
 }
-.stars span{
-    font-size:20px;
+.stars span {
+    font-size:18px;
     cursor:pointer;
     color:#555;
     transition:.2s;
 }
-.stars span.active{
+.stars span.active {
     color:gold;
     text-shadow:0 0 5px gold;
 }
-h2{
-    padding-left:20px;
-    margin-top:30px;
-    font-size:1.8rem;
-    color:#00e676;
-    text-shadow:0 0 8px #00e676;
+
+/* ===== Mensaje sin resultados ===== */
+.no-results {
+    grid-column:1/-1;
+    text-align:center;
+    font-size:18px;
+    opacity:.7;
+}
+
+/* ===== Responsive ===== */
+@media(max-width:600px){
+    header{
+        flex-direction:column;
+        align-items:flex-start;
+        gap:10px;
+    }
+    .search-bar {
+        width:100%;
+    }
+    .grid{
+        grid-template-columns:repeat(auto-fill,minmax(180px,1fr));
+    }
 }
 </style>
 </head>
-
 <body>
 
 <header>
     <h1>Vitvisor</h1>
-    <select id="type">
-        <option value="books">Libros</option>
-        <option value="movies">Películas / Series</option>
-        <option value="games">Videojuegos</option>
-    </select>
-    <input type="text" id="search" placeholder="Buscar...">
+    <div class="search-bar">
+        <select id="type">
+            <option value="books">Libros</option>
+            <option value="movies">Películas / Series</option>
+            <option value="games">Videojuegos</option>
+        </select>
+        <input type="text" id="search" placeholder="Buscar...">
+    </div>
 </header>
 
-<div class="grid" id="results"></div>
+<section>
+    <h2>Resultados</h2>
+    <div class="grid" id="results"></div>
+</section>
 
-<h2>Mi Biblioteca</h2>
-<div class="grid" id="library"></div>
+<section>
+    <h2>Mi Biblioteca</h2>
+    <div class="grid" id="library"></div>
+</section>
 
 <script>
-// ==== JS sigue igual que tu versión actual ====
-const searchInput = document.getElementById("search");
-const typeSelect = document.getElementById("type");
-const results = document.getElementById("results");
-const libraryDiv = document.getElementById("library");
-let library = JSON.parse(localStorage.getItem("vitvisor")) || [];
+// ==== JS igual que tu versión ====
+const searchInput=document.getElementById("search");
+const typeSelect=document.getElementById("type");
+const results=document.getElementById("results");
+const libraryDiv=document.getElementById("library");
+let library=JSON.parse(localStorage.getItem("vitvisor"))||[];
 
-searchInput.addEventListener("input", search);
+searchInput.addEventListener("input",search);
 
 function search(){
-    const q = searchInput.value.trim().toLowerCase();
-    if(q.length < 3){results.innerHTML="";return;}
+    const q=searchInput.value.trim().toLowerCase();
+    if(q.length<3){results.innerHTML="";return;}
     if(typeSelect.value==="books") searchBooks(q);
     else if(typeSelect.value==="movies") searchMovies(q);
     else searchGames(q);
@@ -159,22 +211,22 @@ function searchMovies(q){
 }
 
 function searchGames(q){
-    const qNormalized = q.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();
+    const qNormalized=q.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();
     fetch("https://api.codetabs.com/v1/proxy?quest=https://www.freetogame.com/api/games")
     .then(r=>r.json())
     .then(data=>{
-        const filtered = data.filter(g=>{
-            const title = g.title?.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase() || "";
-            const desc = g.short_description?.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase() || "";
-            return title.includes(qNormalized) || desc.includes(qNormalized);
+        const filtered=data.filter(g=>{
+            const title=g.title?.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase()||"";
+            const desc=g.short_description?.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase()||"";
+            return title.includes(qNormalized)||desc.includes(qNormalized);
         });
         filtered.length===0? showNoResults() : renderResults(filtered.slice(0,20),"game");
     })
-    .catch(()=>{results.innerHTML=`<div style="grid-column:1/-1;text-align:center;opacity:.7">Error al cargar videojuegos</div>`});
+    .catch(()=>{results.innerHTML=`<div class="no-results">Error al cargar videojuegos</div>`});
 }
 
 function showNoResults(){
-    results.innerHTML=`<div style="grid-column:1/-1;text-align:center;font-size:20px;opacity:.7">No se encontró ninguna coincidencia</div>`;
+    results.innerHTML=`<div class="no-results">No se encontró ninguna coincidencia</div>`;
 }
 
 function renderResults(items,type){
