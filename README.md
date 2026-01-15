@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -100,18 +101,34 @@ filterButtons.forEach(btn=>{btn.addEventListener("click",()=>{
 // Búsqueda
 searchInput.addEventListener("input",()=>{ 
     const q=searchInput.value.trim().toLowerCase(); 
-    resultsDiv.innerHTML=""; 
-    if(q.length<3) return; 
-    const t=typeSelect.value; 
+    resultsDiv.innerHTML=""; // Limpiar resultados siempre
+    if(q.length<3) return; // no buscar si es muy corto
+    const t = typeSelect.value; 
     if(t==="books") searchBooks(q); 
     else if(t==="movies") searchMovies(q); 
     else searchGames(q);
 });
 
 // Funciones búsqueda
-function searchBooks(q){ fetch(`https://www.googleapis.com/books/v1/volumes?q=${q}`).then(r=>r.json()).then(d=>{ if(!d.items||d.items.length===0){resultsDiv.innerHTML=`<div class="no-results">No se encontró ninguna coincidencia</div>`;} else renderResults(d.items,"book");}); }
-function searchMovies(q){ fetch(`https://api.tvmaze.com/search/shows?q=${q}`).then(r=>r.json()).then(d=>{ if(!d||d.length===0){resultsDiv.innerHTML=`<div class="no-results">No se encontró ninguna coincidencia</div>`;} else renderResults(d,"movie");}); }
-function searchGames(q){ const qN=q.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase(); fetch("https://api.codetabs.com/v1/proxy?quest=https://www.freetogame.com/api/games").then(r=>r.json()).then(data=>{ const filtered=data.filter(g=>{const title=g.title?.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase()||""; const desc=g.short_description?.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase()||""; return title.includes(qN)||desc.includes(qN);}); filtered.length===0? resultsDiv.innerHTML=`<div class="no-results">No se encontró ninguna coincidencia</div>`:renderResults(filtered.slice(0,50),"game");}).catch(()=>{resultsDiv.innerHTML=`<div class="no-results">Error al cargar videojuegos</div>`;});}
+function searchBooks(q){ 
+    fetch(`https://www.googleapis.com/books/v1/volumes?q=${q}`).then(r=>r.json()).then(d=>{ 
+        if(!d.items||d.items.length===0){resultsDiv.innerHTML=`<div class="no-results">No se encontró ninguna coincidencia</div>`;} 
+        else renderResults(d.items,"book");
+    }); 
+}
+function searchMovies(q){ 
+    fetch(`https://api.tvmaze.com/search/shows?q=${q}`).then(r=>r.json()).then(d=>{ 
+        if(!d||d.length===0){resultsDiv.innerHTML=`<div class="no-results">No se encontró ninguna coincidencia</div>`;} 
+        else renderResults(d,"movie");
+    }); 
+}
+function searchGames(q){ 
+    const qN=q.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase(); 
+    fetch("https://api.codetabs.com/v1/proxy?quest=https://www.freetogame.com/api/games").then(r=>r.json()).then(data=>{ 
+        const filtered=data.filter(g=>{const title=g.title?.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase()||""; const desc=g.short_description?.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase()||""; return title.includes(qN)||desc.includes(qN);}); 
+        filtered.length===0? resultsDiv.innerHTML=`<div class="no-results">No se encontró ninguna coincidencia</div>`:renderResults(filtered.slice(0,50),"game");
+    }).catch(()=>{resultsDiv.innerHTML=`<div class="no-results">Error al cargar videojuegos</div>`;}); 
+}
 
 // Render resultados
 function renderResults(items,type){ resultsDiv.innerHTML="";
@@ -157,5 +174,6 @@ function enableStars(card){const stars=card.querySelectorAll(".stars span"); sta
 function save(){localStorage.setItem("vitvisor",JSON.stringify(library));}
 renderLibrary();
 </script>
+
 </body>
 </html>
